@@ -1,93 +1,141 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'dart:async';
 
 void main() {
   runApp(const CHART());
 }
 
-class CHART extends StatelessWidget {
+class CHART extends StatefulWidget {
   const CHART({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LINE CHART',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: const CHARTS(title: 'LINE CHART'),
-    );
-  }
+  State<CHART> createState() => _CHARTState();
 }
 
-class CHARTS extends StatefulWidget {
-  const CHARTS({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<CHARTS> createState() => _CHARTSState();
-}
-
-class _CHARTSState extends State<CHARTS> {
-  late List<SalesData> _chartData;
+class _CHARTState extends State<CHART> {
+  late List<SalesData> _data;
   late TrackballBehavior _trackballBehavior;
-  late ZoomPanBehavior _zoomPanBehavior;
+  late TrackballBehavior _trackballBehaviors;
+  late ChartSeriesController _chartSeriesController;
+  late ChartSeriesController _chartSeriesControllers;
+  late final int stack;
 
   @override
   void initState() {
-    _chartData = getChartData();
+    _data = getChartData();
     _trackballBehavior = TrackballBehavior(
-      enable: true, 
+      tooltipDisplayMode: TrackballDisplayMode.nearestPoint,
+      enable: true,
       activationMode: ActivationMode.singleTap,
       tooltipSettings: const InteractiveTooltip(
         enable: true,
         format: "point.y °C",
       ),
     );
-    _zoomPanBehavior = ZoomPanBehavior(
-      enablePinching: false, //enable for zoom in out
-      zoomMode: ZoomMode.xy,
-      maximumZoomLevel: 0.5,
+    _trackballBehaviors = TrackballBehavior(
+      tooltipDisplayMode: TrackballDisplayMode.nearestPoint,
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      tooltipSettings: const InteractiveTooltip(
+        enable: true,
+        format: "point.y %",
+      ),
     );
+    Timer.periodic(const Duration(seconds: 1), (timer) { 
+        updateData();
+    });
     super.initState();
   }
 
+  late double xmax = 60;
   @override
   Widget build(BuildContext context) {
+    
     return SafeArea(
       child: Scaffold(
-        body: SfCartesianChart(
-          title: ChartTitle(text: 'TEMPCYCLE#01'),
-          zoomPanBehavior: _zoomPanBehavior,
-          legend: Legend(
-            isVisible: true,
-            position: LegendPosition.bottom,
-            alignment: ChartAlignment.near,
-          ),
-          trackballBehavior: _trackballBehavior,
-          series: <ChartSeries>[
-            LineSeries<SalesData, double>(
-              name: 'Temp',
-              color: Colors.red,
-              dataSource: _chartData,
-              xValueMapper: (SalesData sales, _) => sales.year,
-              yValueMapper: (SalesData sales, _) => sales.sales,
-              // dataLabelSettings: DataLabelSettings(isVisible: true), //enable for show value on line
-              // enableTooltip: true, //enable for text box on trackball
-            ),
-          ],
-          primaryXAxis: NumericAxis(
-            minimum: 0,
-            maximum: 100,
-            interval: 1,
-            edgeLabelPlacement: EdgeLabelPlacement.shift,
-          ),
-          primaryYAxis: NumericAxis(
-            minimum: -80,
-            maximum: 180,
-            interval: 1,
-            // labelFormat: '{value}M', //add befor and after text value
-            // numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0) //$format befor text value
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text("TEMPCYCLE#01",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+              const SizedBox(
+                height: 50,
+              ),
+              SizedBox(
+                width: 500,
+                height: 250,
+                child: SfCartesianChart(
+                  title: ChartTitle(text: 'TEMPERATURE'),
+                  legend: Legend(
+                    isVisible: false,
+                    position: LegendPosition.bottom,
+                    alignment: ChartAlignment.near,
+                  ),
+                  trackballBehavior: _trackballBehavior,
+                  series: <ChartSeries>[
+                    LineSeries<SalesData, double>(
+                      onRendererCreated: (ChartSeriesController controller) {
+                        _chartSeriesController = controller;
+                      },
+                      color: Colors.red,
+                      dataSource: _data,
+                      xValueMapper: (SalesData sales, _) => sales.time,
+                      yValueMapper: (SalesData sales, _) => sales.temp,
+                    ),
+                  ],
+                  primaryXAxis: NumericAxis(
+                    interval: 1,
+                    title: AxisTitle(text: "Time(S)",alignment: ChartAlignment.center),
+                    majorGridLines: const MajorGridLines(width: 0),
+                  ),
+                  primaryYAxis: NumericAxis(
+                    minimum: -80,
+                    maximum: 180,
+                    interval: 10,
+                    title: AxisTitle(text: "Temperature(°C)"),
+                    majorGridLines: const MajorGridLines(width: 0),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 500,
+                height: 250,
+                child: SfCartesianChart(
+                  title: ChartTitle(text: 'HUMIDITY'),
+                  legend: Legend(
+                    isVisible: false,
+                    position: LegendPosition.bottom,
+                    alignment: ChartAlignment.near,
+                  ),
+                  trackballBehavior: _trackballBehaviors,
+                  series: <ChartSeries>[
+                    LineSeries<SalesData, double>(
+                      onRendererCreated: (ChartSeriesController controller) {
+                        _chartSeriesControllers = controller;
+                      },
+                      color: Colors.blue,
+                      dataSource: _data,
+                      xValueMapper: (SalesData sales, _) => sales.time,
+                      yValueMapper: (SalesData sales, _) => sales.humidity,
+                    ),
+                  ],
+                  primaryXAxis: NumericAxis(
+                    interval: 1,
+                    title: AxisTitle(text: "Time(S)"),
+                    majorGridLines: const MajorGridLines(width: 0),
+                  ),
+                  primaryYAxis: NumericAxis(
+                    minimum: 0,
+                    maximum: 100,
+                    interval: 5,
+                    title: AxisTitle(text: "Humidity(%)"),
+                    majorGridLines: const MajorGridLines(width: 0),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -95,19 +143,39 @@ class _CHARTSState extends State<CHARTS> {
   }
 
   List<SalesData> getChartData() {
-    final List<SalesData> chartData = [
-      SalesData(0, 0),
-      SalesData(1, 12),
-      SalesData(4, 24),
-      SalesData(5, 18),
-      SalesData(10, 3)
-    ];
+    
+    final List<SalesData> chartData = [];
+    for (var i = 0;i < xmax;i++) {
+      int randoma = -80 + Random().nextInt(160 - -80);
+      int randomb = 0 + Random().nextInt(100 - 0);
+      chartData.add(SalesData(i.toDouble(), randoma.toDouble(), randomb.toDouble()));
+    }
     return chartData;
+  }
+  
+  void updateData() {
+    xmax+=1;
+    int randoma = -80 + Random().nextInt(160 - -80);
+    int randomb = 0 + Random().nextInt(100 - 0);
+    _data.add(SalesData((xmax+=1).toDouble(), randoma.toDouble(), randomb.toDouble()));
+    _data.removeAt(0);
+
+    _chartSeriesController.updateDataSource(
+      addedDataIndex: _data.length -1,
+      removedDataIndex: 0,
+    );
+
+    _chartSeriesControllers.updateDataSource(
+      addedDataIndex: _data.length -1,
+      removedDataIndex: 0,
+    );
+    // }
   }
 }
 
 class SalesData {
-  SalesData(this.year, this.sales);
-  final double year;
-  final double sales;
+  SalesData(this.time, this.temp, this.humidity);
+  final double time;
+  final double temp;
+  final double humidity;
 }

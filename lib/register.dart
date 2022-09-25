@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:rellab/home.dart';
-import 'package:rellab/register.dart';
+import 'package:rellab/login.dart';
 
-void main() => runApp(const LOGIN());
+void main() => runApp(const REGISTER());
 
-class Logindata {
+class Registerdata {
   static String? username;
   static String? password;
 }
 
 
-class LOGIN extends StatefulWidget {
-  const LOGIN({Key? key}) : super(key: key);
+class REGISTER extends StatefulWidget {
+  const REGISTER({Key? key}) : super(key: key);
 
   @override
-  State<LOGIN> createState() => _LOGINState();
+  State<REGISTER> createState() => _REGISTERState();
 }
 
-class _LOGINState extends State<LOGIN> {
+class _REGISTERState extends State<REGISTER> {
 
   final formkey = GlobalKey<FormState>();
 
@@ -25,7 +24,7 @@ class _LOGINState extends State<LOGIN> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LOGIN"),
+        title: const Text("REGISTER"),
         automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -39,35 +38,35 @@ class _LOGINState extends State<LOGIN> {
                 const Text("Username"),
                 TextFormField(
                   onSaved: (newdata) {
-                    Logindata.username = newdata;
+                    Registerdata.username = newdata;
                   },
                 ),
                 const SizedBox(height: 20,),
                 const Text("Password"),
                 TextFormField(
                   onSaved: (newdata) {
-                    Logindata.password = newdata;
+                    Registerdata.password = newdata;
                   },
                 ),
                 const SizedBox(height: 20,),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    child: const Text("LOGIN"),
+                    child: const Text("REGISTER"),
                     onPressed: () {
                       formkey.currentState?.save();
-                      if (Logindata.username == "Art" && Logindata.password == "1234") {
+                      if (Registerdata.username != "" && Registerdata.password != "") {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Login Success!!!"),
-                              content: Text("Welcome to RELLAB"),
+                              title: Text("Register Success!!!"),
+                              content: Text("Wait approve"),
                             ),
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
                             Navigator.of(context).pop();
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HOME()));
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LOGIN()));
                           });
                         });
                         formkey.currentState?.reset();
@@ -75,7 +74,7 @@ class _LOGINState extends State<LOGIN> {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Login Fail!!!"),
+                              title: Text("Register Fail!!!"),
                               content: Text("Please try again"),
                             ),
                         );
@@ -92,9 +91,9 @@ class _LOGINState extends State<LOGIN> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    child: const Text("REGISTER"),
+                    child: const Text("LOGIN"),
                     onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const REGISTER()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LOGIN()));
                     },
                   ),
                 ),
