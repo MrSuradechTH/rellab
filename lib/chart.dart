@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:async';
+import 'package:sprintf/sprintf.dart';
 
 void main() {
   runApp(const CHART());
@@ -15,12 +17,13 @@ class CHART extends StatefulWidget {
 }
 
 class _CHARTState extends State<CHART> {
-  late List<SalesData> _data;
+  late final List<SalesData> _data;
   late TrackballBehavior _trackballBehavior;
   late TrackballBehavior _trackballBehaviors;
   late ChartSeriesController _chartSeriesController;
   late ChartSeriesController _chartSeriesControllers;
   late final int stack;
+  double temp = 0.0,humid = 0.0;
 
   @override
   void initState() {
@@ -43,99 +46,113 @@ class _CHARTState extends State<CHART> {
         format: "point.y %",
       ),
     );
-    Timer.periodic(const Duration(seconds: 1), (timer) { 
-        updateData();
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      updateData();
     });
     super.initState();
   }
 
-  late double xmax = 60;
+  late double xmax = 100;
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(
       child: Scaffold(
         body: Container(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const Text("TEMPCYCLE#01",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-              const SizedBox(
-                height: 50,
-              ),
-              SizedBox(
-                width: 500,
-                height: 250,
-                child: SfCartesianChart(
-                  title: ChartTitle(text: 'TEMPERATURE'),
-                  legend: Legend(
-                    isVisible: false,
-                    position: LegendPosition.bottom,
-                    alignment: ChartAlignment.near,
-                  ),
-                  trackballBehavior: _trackballBehavior,
-                  series: <ChartSeries>[
-                    LineSeries<SalesData, double>(
-                      onRendererCreated: (ChartSeriesController controller) {
-                        _chartSeriesController = controller;
-                      },
-                      color: Colors.red,
-                      dataSource: _data,
-                      xValueMapper: (SalesData sales, _) => sales.time,
-                      yValueMapper: (SalesData sales, _) => sales.temp,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text("TEMPCYCLE#01",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                Container(
+                  height: 50,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(0),
+                  width: 500,
+                  height: 250,
+                  child: SfCartesianChart(
+                    title: ChartTitle(text: 'TEMPERATURE'),
+                    legend: Legend(
+                      isVisible: false,
+                      position: LegendPosition.bottom,
+                      alignment: ChartAlignment.near,
                     ),
-                  ],
-                  primaryXAxis: NumericAxis(
-                    interval: 1,
-                    title: AxisTitle(text: "Time(S)",alignment: ChartAlignment.center),
-                    majorGridLines: const MajorGridLines(width: 0),
-                  ),
-                  primaryYAxis: NumericAxis(
-                    minimum: -80,
-                    maximum: 180,
-                    interval: 10,
-                    title: AxisTitle(text: "Temperature(°C)"),
-                    majorGridLines: const MajorGridLines(width: 0),
+                    trackballBehavior: _trackballBehavior,
+                    series: <ChartSeries>[
+                      LineSeries<SalesData, double>(
+                        onRendererCreated: (ChartSeriesController controller) {
+                          _chartSeriesController = controller;
+                        },
+                        color: Colors.red,
+                        dataSource: _data,
+                        xValueMapper: (SalesData sales, _) => sales.time,
+                        yValueMapper: (SalesData sales, _) => sales.temp,
+                      ),
+                    ],
+                    primaryXAxis: NumericAxis(
+                      interval: 1,
+                      title: AxisTitle(text: "Time(S)",alignment: ChartAlignment.center),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      minimum: -80,
+                      maximum: 180,
+                      interval: 10,
+                      title: AxisTitle(text: "Temperature(°C)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 500,
-                height: 250,
-                child: SfCartesianChart(
-                  title: ChartTitle(text: 'HUMIDITY'),
-                  legend: Legend(
-                    isVisible: false,
-                    position: LegendPosition.bottom,
-                    alignment: ChartAlignment.near,
-                  ),
-                  trackballBehavior: _trackballBehaviors,
-                  series: <ChartSeries>[
-                    LineSeries<SalesData, double>(
-                      onRendererCreated: (ChartSeriesController controller) {
-                        _chartSeriesControllers = controller;
-                      },
-                      color: Colors.blue,
-                      dataSource: _data,
-                      xValueMapper: (SalesData sales, _) => sales.time,
-                      yValueMapper: (SalesData sales, _) => sales.humidity,
+                Container(
+                  padding: const EdgeInsets.all(0),
+                  width: 500,
+                  height: 250,
+                  child: SfCartesianChart(
+                    title: ChartTitle(text: 'HUMIDITY'),
+                    legend: Legend(
+                      isVisible: false,
+                      position: LegendPosition.bottom,
+                      alignment: ChartAlignment.near,
                     ),
-                  ],
-                  primaryXAxis: NumericAxis(
-                    interval: 1,
-                    title: AxisTitle(text: "Time(S)"),
-                    majorGridLines: const MajorGridLines(width: 0),
-                  ),
-                  primaryYAxis: NumericAxis(
-                    minimum: 0,
-                    maximum: 100,
-                    interval: 5,
-                    title: AxisTitle(text: "Humidity(%)"),
-                    majorGridLines: const MajorGridLines(width: 0),
+                    trackballBehavior: _trackballBehaviors,
+                    series: <ChartSeries>[
+                      LineSeries<SalesData, double>(
+                        onRendererCreated: (ChartSeriesController controller) {
+                          _chartSeriesControllers = controller;
+                        },
+                        color: Colors.blue,
+                        dataSource: _data,
+                        xValueMapper: (SalesData sales, _) => sales.time,
+                        yValueMapper: (SalesData sales, _) => sales.humidity,
+                      ),
+                    ],
+                    primaryXAxis: NumericAxis(
+                      interval: 1,
+                      title: AxisTitle(text: "Time(S)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      minimum: 0,
+                      maximum: 100,
+                      interval: 5,
+                      title: AxisTitle(text: "Humidity(%)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  height: 50,
+                ),
+                Text(
+                  sprintf("Temp %5.2f °C",[temp]),
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                Text(
+                  sprintf("Hum   %5.2f %",[humid]),
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -157,7 +174,7 @@ class _CHARTState extends State<CHART> {
     xmax+=1;
     int randoma = -80 + Random().nextInt(160 - -80);
     int randomb = 0 + Random().nextInt(100 - 0);
-    _data.add(SalesData((xmax+=1).toDouble(), randoma.toDouble(), randomb.toDouble()));
+    _data.add(SalesData((xmax).toDouble(), randoma.toDouble(), randomb.toDouble()));
     _data.removeAt(0);
 
     _chartSeriesController.updateDataSource(
@@ -169,7 +186,11 @@ class _CHARTState extends State<CHART> {
       addedDataIndex: _data.length -1,
       removedDataIndex: 0,
     );
-    // }
+
+    setState(() {
+      temp = randoma.toDouble();
+      humid = randomb.toDouble();
+    });
   }
 }
 

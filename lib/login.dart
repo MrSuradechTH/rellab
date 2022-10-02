@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rellab/home.dart';
 import 'package:rellab/register.dart';
@@ -48,6 +49,7 @@ class _LOGINState extends State<LOGIN> {
                   onSaved: (newdata) {
                     Logindata.password = newdata;
                   },
+                  obscureText: true,
                 ),
                 const SizedBox(height: 20,),
                 SizedBox(
@@ -66,7 +68,7 @@ class _LOGINState extends State<LOGIN> {
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HOME()));
                           });
                         });
@@ -81,7 +83,7 @@ class _LOGINState extends State<LOGIN> {
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
                           });
                         });
                         formkey.currentState?.reset();

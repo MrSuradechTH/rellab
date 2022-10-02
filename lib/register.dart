@@ -65,7 +65,7 @@ class _REGISTERState extends State<REGISTER> {
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LOGIN()));
                           });
                         });
@@ -80,7 +80,7 @@ class _REGISTERState extends State<REGISTER> {
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
                           });
                         });
                         formkey.currentState?.reset();
