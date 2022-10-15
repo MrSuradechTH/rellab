@@ -1,0 +1,3 @@
+RewriteEngine on
+RewriteRule ^jsonget  jsonget.php [NC,L]
+DirectoryIndex jsonget.php
