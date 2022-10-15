@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rellab/account.dart';
 import 'package:rellab/machinestatus_type.dart';
+import 'package:rellab/share_data.dart';
 
 class HOME extends StatefulWidget {
   const HOME({Key? key}) : super(key: key);

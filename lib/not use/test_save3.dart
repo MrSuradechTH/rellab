@@ -1,127 +1,217 @@
+import 'dart:ffi';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:rellab/share_data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:async';
-import 'dart:math' as math;
+import 'package:sprintf/sprintf.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class CHART extends StatefulWidget {
+  const CHART({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  // ignore: no_logic_in_create_state
+  State<CHART> createState() => _CHARTState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  late List<LiveData> chartData;
+class _CHARTState extends State<CHART> {
+
+  late final List<SalesData> _data;
+  late TrackballBehavior _trackballBehavior;
+  late TrackballBehavior _trackballBehaviors;
   late ChartSeriesController _chartSeriesController;
+  late ChartSeriesController _chartSeriesControllers;
+  late final int stack;
+  double temp = 0.0,humid = 0.0;
 
   @override
   void initState() {
-    chartData = getChartData();
-    Timer.periodic(const Duration(seconds: 1), updateDataSource);
+    _data = getChartData();
+    _trackballBehavior = TrackballBehavior(
+      tooltipDisplayMode: TrackballDisplayMode.nearestPoint,
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      tooltipSettings: const InteractiveTooltip(
+        enable: true,
+        format: "point.y °C",
+      ),
+    );
+    _trackballBehaviors = TrackballBehavior(
+      tooltipDisplayMode: TrackballDisplayMode.nearestPoint,
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      tooltipSettings: const InteractiveTooltip(
+        enable: true,
+        format: "point.y %",
+      ),
+    );
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      getdata(mode[0]);
+      updateData();
+    });
     super.initState();
   }
 
+  late double xmax = 25;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            body: SfCartesianChart(
-                series: <LineSeries<LiveData, int>>[
-          LineSeries<LiveData, int>(
-            onRendererCreated: (ChartSeriesController controller) {
-              _chartSeriesController = controller;
-            },
-            dataSource: chartData,
-            color: const Color.fromRGBO(192, 108, 132, 1),
-            xValueMapper: (LiveData sales, _) => sales.time,
-            yValueMapper: (LiveData sales, _) => sales.speed,
-          )
-        ],
-                primaryXAxis: NumericAxis(
-                    majorGridLines: const MajorGridLines(width: 0),
-                    edgeLabelPlacement: EdgeLabelPlacement.shift,
-                    interval: 3,
-                    title: AxisTitle(text: 'Time (seconds)')),
-                primaryYAxis: NumericAxis(
-                    axisLine: const AxisLine(width: 0),
-                    majorTickLines: const MajorTickLines(size: 0),
-                    title: AxisTitle(text: 'Internet speed (Mbps)')))));
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("MACHINE STATUS"),
+          automaticallyImplyLeading: false,
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(sharedata[1],style: const TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                Container(
+                  height: 50,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(0),
+                  width: 500,
+                  height: 250,
+                  child: SfCartesianChart(
+                    title: ChartTitle(text: 'TEMPERATURE'),
+                    legend: Legend(
+                      isVisible: false,
+                      position: LegendPosition.bottom,
+                      alignment: ChartAlignment.near,
+                    ),
+                    trackballBehavior: _trackballBehavior,
+                    series: <ChartSeries>[
+                      LineSeries<SalesData, String>(
+                        onRendererCreated: (ChartSeriesController controller) {
+                          _chartSeriesController = controller;
+                        },
+                        color: Colors.red,
+                        dataSource: _data,
+                        xValueMapper: (SalesData sales, _) => sales.time,
+                        yValueMapper: (SalesData sales, _) => sales.temp,
+                      ),
+                    ],
+                    primaryXAxis: CategoryAxis(
+                      interval: 1,
+                      labelRotation: 90,
+                      tickPosition: TickPosition.inside,
+                      title: AxisTitle(text: "Time(S)",alignment: ChartAlignment.center),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      minimum: -80,
+                      maximum: 180,
+                      interval: 10,
+                      tickPosition: TickPosition.inside,
+                      title: AxisTitle(text: "Temperature(°C)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(0),
+                  width: 500,
+                  height: 250,
+                  child: SfCartesianChart(
+                    title: ChartTitle(text: 'HUMIDITY'),
+                    legend: Legend(
+                      isVisible: false,
+                      position: LegendPosition.bottom,
+                      alignment: ChartAlignment.near,
+                    ),
+                    trackballBehavior: _trackballBehaviors,
+                    series: <ChartSeries>[
+                      LineSeries<SalesData, String>(
+                        onRendererCreated: (ChartSeriesController controller) {
+                          _chartSeriesControllers = controller;
+                        },
+                        color: Colors.blue,
+                        dataSource: _data,
+                        xValueMapper: (SalesData sales, _) => sales.time,
+                        // sales.time - xmax%10 - 1
+                        yValueMapper: (SalesData sales, _) => sales.humidity,
+                      ),
+                    ],
+                    primaryXAxis: CategoryAxis(
+                      interval: 1,
+                      labelRotation: 90,
+                      // isVisible: false, //hide
+                      tickPosition: TickPosition.inside,
+                      title: AxisTitle(text: "Time(S)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                    primaryYAxis: NumericAxis(
+                      minimum: 0,
+                      maximum: 100,
+                      interval: 5,
+                      tickPosition: TickPosition.inside,
+                      title: AxisTitle(text: "Humidity(%)"),
+                      majorGridLines: const MajorGridLines(width: 0),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                ),
+                Text(
+                  sprintf("Temp %5.2f °C",[temp]),
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                Text(
+                  sprintf("Hum   %5.2f %",[humid]),
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  int time = 19;
-  void updateDataSource(Timer timer) {
-    chartData.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
-    chartData.removeAt(0);
+  List<SalesData> getChartData() {
+    final List<SalesData> chartData = [];
+    for (var i = 0;i < xmax;i++) {
+      // int randoma = -80 + Random().nextInt(160 - -80);
+      // int randomb = 0 + Random().nextInt(100 - 0);
+      // int a = datain['temp'];
+      chartData.add(SalesData('s', double.parse('0'), double.parse('0')));
+    }
+    return chartData;
+  }
+  
+  void updateData() {
+    xmax+=1;
+    // int randoma = -80 + Random().nextInt(160 - -80);
+    // int randomb = 0 + Random().nextInt(100 - 0);
+    _data.add(SalesData('s', double.parse(datain['temp']), double.parse(datain['humid'])));
+    _data.removeAt(0);
+
     _chartSeriesController.updateDataSource(
-        addedDataIndex: chartData.length - 1, removedDataIndex: 0);
-  }
+      addedDataIndex: _data.length -1,
+      removedDataIndex: 0,
+    );
 
-  List<LiveData> getChartData() {
-    return <LiveData>[
-      LiveData(0, 42),
-      LiveData(1, 47),
-      LiveData(2, 43),
-      LiveData(3, 49),
-      LiveData(4, 54),
-      LiveData(5, 41),
-      LiveData(6, 58),
-      LiveData(7, 51),
-      LiveData(8, 98),
-      LiveData(9, 41),
-      LiveData(10, 53),
-      LiveData(11, 72),
-      LiveData(12, 86),
-      LiveData(13, 52),
-      LiveData(14, 94),
-      LiveData(15, 92),
-      LiveData(16, 86),
-      LiveData(17, 72),
-      LiveData(18, 94)
-    ];
+    _chartSeriesControllers.updateDataSource(
+      addedDataIndex: _data.length -1,
+      removedDataIndex: 0,
+    );
+
+    setState(() {
+      // temp = randoma.toDouble();
+      // humid = randomb.toDouble();
+
+      temp = double.parse(datain['temp']);
+      humid = double.parse(datain['humid']);;
+    });
   }
 }
 
-class LiveData {
-  LiveData(this.time, this.speed);
-  final int time;
-  final num speed;
+class SalesData {
+  final String time;
+  final double temp;
+  final double humidity;
+  SalesData(this.time, this.temp, this.humidity);
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rellab/chart.dart';
-import 'package:rellab/machinestatus_share.dart';
+import 'package:rellab/share_data.dart';
 
 class MACHINESTATUSNAME extends StatefulWidget {
   const MACHINESTATUSNAME( {Key? key}) : super(key: key);
