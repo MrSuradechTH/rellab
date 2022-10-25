@@ -1,5 +1,5 @@
 //database
-CREATE DATABASE relldata
+CREATE DATABASE rellab
 
 //table
 CREATE TABLE machine_data(
