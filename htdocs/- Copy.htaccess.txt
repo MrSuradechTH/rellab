@@ -1,3 +1,3 @@
 RewriteEngine on
-RewriteRule ^jsonget  jsonget.php [NC,L]
-DirectoryIndex jsonget.php
+RewriteRule ^json  json.php [NC,L]
+DirectoryIndex json.php
