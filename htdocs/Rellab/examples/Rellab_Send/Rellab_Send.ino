@@ -9,5 +9,5 @@ void setup() {
   Rellab.Begin(Wifi_ssid, Wifi_password);
 }
 void loop() {
-  Rellab.Send("TEMPHUMID#01", "124.3", "45.23");
+  Rellab.Send("machine_name", "temp", "humid");
 }

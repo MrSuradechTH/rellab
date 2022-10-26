@@ -35,7 +35,7 @@ void Rellab::Begin(const char* wifi_ssid, const char* wifi_password) {
   Serial.println("Wifi Connected");
 }
 
-void Rellab::Send(String name, String temp, String humid) {
+void Rellab::Send(String _name, String _temp, String _humid) {
   if ((WiFiMulti.run() == WL_CONNECTED)) {
     WiFiClient client;
     HTTPClient http;
@@ -47,7 +47,9 @@ void Rellab::Send(String name, String temp, String humid) {
 
 //    int httpCode = http.GET(); //get
     //int httpCode = http.POST("username=" + _perdpro_username + "&" + "password=" + _perdpro_password + "&" + value_name + "=" + value_num + "&mode=SEND"); //post
-	int httpCode = http.POST("mode=update" + "&name=" + name + "&temp=" + temp + "&humid=" + humid); //post
+	// Serial.print("mode=" + _mode + "&name=" + _name + "&temp=" + _temp + "&humid=" + _humid);
+	// int httpCode = http.POST("mode=SEND&username=" + _perdpro_username + "&" + "password=" + _perdpro_password + "&" + "api_name=" + api_name + "&" + "api_value=" + api_value); //post
+	int httpCode = http.POST("mode=" + _mode + "&name=" + _name + "&temp=" + _temp + "&humid=" + _humid); //post
 	Serial.print("STATUS[SEND] : ");
     if (httpCode > 0) {
 //      Serial.printf("[HTTP] GET... code: %d\n", httpCode); //show code
