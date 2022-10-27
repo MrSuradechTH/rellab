@@ -8,13 +8,12 @@ class ACCOUNT extends StatefulWidget {
 }
 
 class _ACCOUNTState extends State<ACCOUNT> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("ACCOUNT"),
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: Center(
         child: Column(

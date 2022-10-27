@@ -13,14 +13,13 @@ class CHART extends StatefulWidget {
 }
 
 class _CHARTState extends State<CHART> {
-
   late final List<SalesData> _data;
   late TrackballBehavior _trackballBehavior;
   late TrackballBehavior _trackballBehaviors;
   late ChartSeriesController _chartSeriesController;
   late ChartSeriesController _chartSeriesControllers;
   late final int stack;
-  double temp = 0.0,humid = 0.0;
+  double temp = 0.0, humid = 0.0;
 
   @override
   void initState() {
@@ -57,14 +56,18 @@ class _CHARTState extends State<CHART> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("MACHINE STATUS"),
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
         ),
         body: Container(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text(sharedata[1],style: const TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                Text(
+                  sharedata[1],
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
+                ),
                 Container(
                   height: 10,
                 ),
@@ -73,7 +76,9 @@ class _CHARTState extends State<CHART> {
                   width: 500,
                   height: 325,
                   child: SfCartesianChart(
-                    title: ChartTitle(text: sprintf("Temp %5.2f °C",[temp]),textStyle: const TextStyle(fontSize: 20)),
+                    title: ChartTitle(
+                        text: sprintf("Temp %5.2f °C", [temp]),
+                        textStyle: const TextStyle(fontSize: 20)),
                     legend: Legend(
                       isVisible: false,
                       position: LegendPosition.bottom,
@@ -91,14 +96,17 @@ class _CHARTState extends State<CHART> {
                         yValueMapper: (SalesData sales, _) => sales.temp,
                       ),
                     ],
-                    primaryXAxis: CategoryAxis( //String
+                    primaryXAxis: CategoryAxis(
+                      //String
                       interval: 1,
                       labelRotation: 90,
                       tickPosition: TickPosition.inside,
-                      title: AxisTitle(text: "Time(S)",alignment: ChartAlignment.center),
+                      title: AxisTitle(
+                          text: "Time(S)", alignment: ChartAlignment.center),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
-                    primaryYAxis: NumericAxis(  //Number
+                    primaryYAxis: NumericAxis(
+                      //Number
                       minimum: -80,
                       maximum: 180,
                       interval: 10,
@@ -113,7 +121,9 @@ class _CHARTState extends State<CHART> {
                   width: 500,
                   height: 325,
                   child: SfCartesianChart(
-                    title: ChartTitle(text: sprintf("Hum   %5.2f %",[humid]),textStyle: const TextStyle(fontSize: 20)),
+                    title: ChartTitle(
+                        text: sprintf("Hum   %5.2f %", [humid]),
+                        textStyle: const TextStyle(fontSize: 20)),
                     legend: Legend(
                       isVisible: false,
                       position: LegendPosition.bottom,
@@ -132,7 +142,8 @@ class _CHARTState extends State<CHART> {
                         yValueMapper: (SalesData sales, _) => sales.humidity,
                       ),
                     ],
-                    primaryXAxis: CategoryAxis( //String
+                    primaryXAxis: CategoryAxis(
+                      //String
                       interval: 1,
                       labelRotation: 90,
                       // isVisible: false, //hide
@@ -140,7 +151,8 @@ class _CHARTState extends State<CHART> {
                       title: AxisTitle(text: "Time(S)"),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
-                    primaryYAxis: NumericAxis(  //Number
+                    primaryYAxis: NumericAxis(
+                      //Number
                       minimum: 0,
                       maximum: 100,
                       interval: 5,
@@ -160,29 +172,31 @@ class _CHARTState extends State<CHART> {
 
   List<SalesData> getChartData() {
     final List<SalesData> chartData = [];
-    for (var i = 0;i < xmax;i++) {
+    for (var i = 0; i < xmax; i++) {
       // int randoma = -80 + Random().nextInt(160 - -80);
       // int randomb = 0 + Random().nextInt(100 - 0);
       // int a = datain['temp'];
-      chartData.add(SalesData(datain['time']??"", double.parse('0'), double.parse('0')));
+      chartData.add(SalesData(
+          datain['time'] ?? "", double.parse('0'), double.parse('0')));
     }
     return chartData;
   }
-  
+
   void updateData() {
-    xmax+=1;
+    xmax += 1;
     // int randoma = -80 + Random().nextInt(160 - -80);
     // int randomb = 0 + Random().nextInt(100 - 0);
-    _data.add(SalesData(datain['time'], double.parse(datain['temp']), double.parse(datain['humid'])));
+    _data.add(SalesData(datain['time'], double.parse(datain['temp']),
+        double.parse(datain['humid'])));
     _data.removeAt(0);
 
     _chartSeriesController.updateDataSource(
-      addedDataIndex: _data.length -1,
+      addedDataIndex: _data.length - 1,
       removedDataIndex: 0,
     );
 
     _chartSeriesControllers.updateDataSource(
-      addedDataIndex: _data.length -1,
+      addedDataIndex: _data.length - 1,
       removedDataIndex: 0,
     );
 
@@ -191,7 +205,8 @@ class _CHARTState extends State<CHART> {
       // humid = randomb.toDouble();
 
       temp = double.parse(datain['temp']);
-      humid = double.parse(datain['humid']);;
+      humid = double.parse(datain['humid']);
+      ;
     });
   }
 }
