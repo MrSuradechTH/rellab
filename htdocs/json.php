@@ -45,6 +45,8 @@
 		$time = date("H:i:s",strtotime('+7 hours, +543 year, -1 second'));
 		$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $time);
 		echo json_encode($array, JSON_PRETTY_PRINT);
+		// echo json_encode($array, JSON_PRETTY_PRINT);
+		// echo json_encode($array, JSON_PRETTY_PRINT);
 		exit();
 	}
 ?>
