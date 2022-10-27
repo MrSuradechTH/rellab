@@ -49,7 +49,7 @@ class _CHARTState extends State<CHART> {
     super.initState();
   }
 
-  late double xmax = 10;
+  late double xmax = 500;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -98,7 +98,7 @@ class _CHARTState extends State<CHART> {
                     ],
                     primaryXAxis: CategoryAxis(
                       //String
-                      interval: 1,
+                      interval: 50,
                       labelRotation: 90,
                       tickPosition: TickPosition.inside,
                       title: AxisTitle(
@@ -144,7 +144,7 @@ class _CHARTState extends State<CHART> {
                     ],
                     primaryXAxis: CategoryAxis(
                       //String
-                      interval: 1,
+                      interval: 50,
                       labelRotation: 90,
                       // isVisible: false, //hide
                       tickPosition: TickPosition.inside,

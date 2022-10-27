@@ -9,7 +9,8 @@ final List<String> machinestatustype = [
   "TEMPHUMID",
   "ENDURANCE",
   "BURNIN",
-  "BAKE"
+  "BAKE",
+  "HAST"
 ];
 final List<List<String>> machinestatusname = [
   [
@@ -17,7 +18,9 @@ final List<List<String>> machinestatusname = [
     "TEMPCYCLE#02",
     "TEMPCYCLE#03",
     "TEMPCYCLE#04",
-    "TEMPCYCLE#05"
+    "TEMPCYCLE#05",
+    "TEMPCYCLE#06",
+    "TEMPCYCLE#07"
   ],
   [
     "TEMPHUMID#01",
@@ -26,15 +29,30 @@ final List<List<String>> machinestatusname = [
     "TEMPHUMID#04",
     "TEMPHUMID#05"
   ],
+  ["ENDURANCE#01", "ENDURANCE#02", "ENDURANCE#03", "ENDURANCE#04"],
   [
-    "ENDURANCE#01",
-    "ENDURANCE#02",
-    "ENDURANCE#03",
-    "ENDURANCE#04",
-    "ENDURANCE#05"
+    "BURNIN#01",
+    "BURNIN#02",
+    "BURNIN#03",
+    "BURNIN#04",
+    "BURNIN#05",
+    "BURNIN#06",
+    "BURNIN#07",
+    "BURNIN#08",
+    "BURNIN#09",
+    "BURNIN#10",
+    "BURNIN#11",
+    "BURNIN#12",
+    "BURNIN#13",
+    "BURNIN#14",
+    "BURNIN#15",
+    "BURNIN#16",
+    "BURNIN#17",
+    "BURNIN#18",
+    "BURNIN#19"
   ],
-  ["BURNIN#01", "BURNIN#02", "BURNIN#03", "BURNIN#04", "BURNIN#05"],
-  ["BAKE#01", "BAKE#02", "BAKE#03", "BAKE#04", "BAKE#05"],
+  ["BAKE#01", "BAKE#02", "BAKE#03"],
+  ["HAST#01", "HAST#02", "HAST#03", "HAST#04", "HAST#05", "HAST#06", "HAST#07"],
 ];
 final List<String> sharedata = [
   "",
