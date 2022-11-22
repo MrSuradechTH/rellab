@@ -1,3 +1,0 @@
-Rellab 	KEYWORD1
-Begin	KEYWORD2
-Send	KEYWORD2

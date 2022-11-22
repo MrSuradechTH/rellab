@@ -1,3 +1,0 @@
-RewriteEngine on
-RewriteRule ^json  json.php [NC,L]
-DirectoryIndex json.php
