@@ -1,0 +1,9 @@
+//database
+CREATE DATABASE relldata
+
+//table
+CREATE TABLE machine_data(
+    name varchar(255) UNIQUE KEY NOT NULL,
+    temp varchar(255) NOT NULL,
+    humid varchar(255) NOT NULL
+);
