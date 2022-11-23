@@ -14,6 +14,9 @@ class _ACCOUNTState extends State<ACCOUNT> {
       appBar: AppBar(
         title: const Text("ACCOUNT"),
         automaticallyImplyLeading: true,
+        leading: const BackButton(
+          color: Colors.white,
+        ),
       ),
       body: Center(
         child: Column(

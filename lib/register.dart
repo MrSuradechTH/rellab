@@ -8,7 +8,6 @@ class Registerdata {
   static String? password;
 }
 
-
 class REGISTER extends StatefulWidget {
   const REGISTER({Key? key}) : super(key: key);
 
@@ -17,7 +16,6 @@ class REGISTER extends StatefulWidget {
 }
 
 class _REGISTERState extends State<REGISTER> {
-
   final formkey = GlobalKey<FormState>();
 
   @override
@@ -41,46 +39,59 @@ class _REGISTERState extends State<REGISTER> {
                     Registerdata.username = newdata;
                   },
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 const Text("Password"),
                 TextFormField(
                   onSaved: (newdata) {
                     Registerdata.password = newdata;
                   },
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 SizedBox(
                   width: double.infinity,
+                  height: 40,
                   child: ElevatedButton(
                     child: const Text("REGISTER"),
                     onPressed: () {
                       formkey.currentState?.save();
-                      if (Registerdata.username != "" && Registerdata.password != "") {
+                      if (Registerdata.username != "" &&
+                          Registerdata.password != "") {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Register Success!!!"),
-                              content: Text("Wait approve"),
-                            ),
+                            title: Text("Register Success!!!"),
+                            content: Text("Wait approve"),
+                          ),
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LOGIN()));
+                            Navigator.of(context).canPop()
+                                ? Navigator.of(context).pop()
+                                : null;
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LOGIN()));
                           });
                         });
                         formkey.currentState?.reset();
-                      }else {
+                      } else {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Register Fail!!!"),
-                              content: Text("Please try again"),
-                            ),
+                            title: Text("Register Fail!!!"),
+                            content: Text("Please try again"),
+                          ),
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
+                            Navigator.of(context).canPop()
+                                ? Navigator.of(context).pop()
+                                : null;
                           });
                         });
                         formkey.currentState?.reset();
@@ -88,18 +99,24 @@ class _REGISTERState extends State<REGISTER> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 SizedBox(
                   width: double.infinity,
+                  height: 40,
                   child: ElevatedButton(
                     child: const Text("LOGIN"),
                     onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LOGIN()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LOGIN()));
                     },
                   ),
                 ),
               ],
-            ), 
+            ),
           ),
         ),
       ),

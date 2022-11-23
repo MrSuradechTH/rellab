@@ -16,7 +16,7 @@ class _HOMEState extends State<HOME> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("HOME"),
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
       ),
       body: GridView.count(crossAxisCount: menux, children: [
         Container(

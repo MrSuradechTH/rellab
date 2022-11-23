@@ -11,14 +11,27 @@ class MACHINESTATUSNAME extends StatefulWidget {
 
 class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
   Widget name(int i) {
-    print("machinestatusname[int.parse(sharedata[0])][i]");
+    // print("machinestatusname[int.parse(sharedata[0])][i]");
     return Container(
       padding: const EdgeInsets.all(10),
       child: ElevatedButton(
-          child: Text(
-            machinestatusname[int.parse(sharedata[0])][i],
-            style: const TextStyle(fontSize: menufontsize),
-            textAlign: TextAlign.center,
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 120.0),
+            child: Row(
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 30.0),
+                  child: Text(
+                    machinestatusname[int.parse(sharedata[0])][i],
+                    style: const TextStyle(fontSize: menufontsize),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
           onPressed: () {
             sharedata[1] = machinestatusname[int.parse(sharedata[0])][i];
@@ -34,6 +47,9 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
       appBar: AppBar(
         title: const Text("MACHINE STATUS"),
         automaticallyImplyLeading: true,
+        leading: const BackButton(
+          color: Colors.white,
+        ),
       ),
       body: GridView.count(
         crossAxisCount: menux,

@@ -34,6 +34,9 @@ class _MACHINESTATUSTYPEState extends State<MACHINESTATUSTYPE> {
       appBar: AppBar(
         title: const Text("MACHINE STATUS"),
         automaticallyImplyLeading: true,
+        leading: const BackButton(
+          color: Colors.white,
+        ),
       ),
       body: GridView.count(
         crossAxisCount: menux,

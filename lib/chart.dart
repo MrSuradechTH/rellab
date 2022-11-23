@@ -56,6 +56,9 @@ class _CHARTState extends State<CHART> {
         appBar: AppBar(
           title: const Text("MACHINE STATUS"),
           automaticallyImplyLeading: true,
+          leading: const BackButton(
+            color: Colors.white,
+          ),
         ),
         body: Container(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
@@ -201,7 +204,7 @@ class _CHARTState extends State<CHART> {
       removedDataIndex: 0,
     );
 
-  if (!mounted) return;
+    if (!mounted) return;
     setState(() {
       // temp = randoma.toDouble();
       // humid = randomb.toDouble();

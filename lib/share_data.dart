@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 //them
-dynamic background = Colors.lightBlue;
+dynamic background = Colors.grey;
 dynamic menux = 5;
 const double menufontsize = 20;
 

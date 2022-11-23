@@ -9,7 +9,6 @@ class Logindata {
   static String? password;
 }
 
-
 class LOGIN extends StatefulWidget {
   const LOGIN({Key? key}) : super(key: key);
 
@@ -18,7 +17,6 @@ class LOGIN extends StatefulWidget {
 }
 
 class _LOGINState extends State<LOGIN> {
-
   final formkey = GlobalKey<FormState>();
 
   @override
@@ -42,7 +40,9 @@ class _LOGINState extends State<LOGIN> {
                     Logindata.username = newdata;
                   },
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 const Text("Password"),
                 TextFormField(
                   onSaved: (newdata) {
@@ -50,39 +50,50 @@ class _LOGINState extends State<LOGIN> {
                   },
                   obscureText: true,
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 SizedBox(
                   width: double.infinity,
+                  height: 40,
                   child: ElevatedButton(
                     child: const Text("LOGIN"),
                     onPressed: () {
                       formkey.currentState?.save();
-                      if (Logindata.username == "" && Logindata.password == "") {
+                      if (Logindata.username == "" &&
+                          Logindata.password == "") {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Login Success!!!"),
-                              content: Text("Welcome to RELLAB"),
-                            ),
+                            title: Text("Login Success!!!"),
+                            content: Text("Welcome to RELLAB"),
+                          ),
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HOME()));
+                            Navigator.of(context).canPop()
+                                ? Navigator.of(context).pop()
+                                : null;
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HOME()));
                           });
                         });
                         formkey.currentState?.reset();
-                      }else {
+                      } else {
                         showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                              title: Text("Login Fail!!!"),
-                              content: Text("Please try again"),
-                            ),
+                            title: Text("Login Fail!!!"),
+                            content: Text("Please try again"),
+                          ),
                         );
                         Future.delayed(const Duration(milliseconds: 1000), () {
                           setState(() {
-                            Navigator.of(context).canPop()?Navigator.of(context).pop():null;
+                            Navigator.of(context).canPop()
+                                ? Navigator.of(context).pop()
+                                : null;
                           });
                         });
                         formkey.currentState?.reset();
@@ -90,18 +101,24 @@ class _LOGINState extends State<LOGIN> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 SizedBox(
                   width: double.infinity,
+                  height: 40,
                   child: ElevatedButton(
                     child: const Text("REGISTER"),
                     onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const REGISTER()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const REGISTER()));
                     },
                   ),
                 ),
               ],
-            ), 
+            ),
           ),
         ),
       ),
