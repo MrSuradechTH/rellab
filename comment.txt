@@ -1,0 +1,1 @@
+"${machinestatusname[int.parse(sharedata[0])][i]}\n\nTemp = \nHumid = ",
