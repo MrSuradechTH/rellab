@@ -73,6 +73,7 @@ const int updatedelay = 990;
 List<dynamic> logarrray = [];
 int logsize = 0;
 bool chart_start = false;
+bool first_time = true;
 
 // List<List<dynamic>> dataneed = [[],[],[]]; //array
 Future getdata(String m) async {

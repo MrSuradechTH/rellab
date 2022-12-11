@@ -26,6 +26,7 @@ class _CHARTState extends State<CHART> {
   @override
   void initState() {
     chart_start = false;
+    first_time = true;
     _data = getChartData();
     _trackballBehavior = TrackballBehavior(
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -46,8 +47,9 @@ class _CHARTState extends State<CHART> {
       ),
     );
     Timer.periodic(const Duration(milliseconds: updatedelay), (timer) async {
-      print("loogsize = " + logsize.toString() + ":xmax = " + xmax.toString());
+      // print("loogsize = " + logsize.toString() + ":xmax = " + xmax.toString());
       if (chart_start == true) {
+        print(_data.length);
         getdata(mode[0]);
         updateData();
       }
@@ -179,40 +181,39 @@ class _CHARTState extends State<CHART> {
   }
 
   List<SalesData> getChartData() {
-    getdata(mode[1]);
+    setState(() {
+      getdata(mode[1]);
+    });
     final List<SalesData> chartData = [];
     // chartData.length = 0;
-    chartData.add(SalesData('', double.parse('0'), double.parse('0')));
-    Timer(Duration(seconds: 5), () {
-      // print(logsize);
-      // print(logarrray[9]);
-      chartData.length - 1;
-      for (var i = 0; i < xmax; i++) {
-        int randoma = -80 + Random().nextInt(160 - -80);
-        int randomb = 0 + Random().nextInt(100 - 0);
-        String a = "0.0";
+    chartData.add(SalesData('START', double.parse('0'), double.parse('0')));
+    Timer(const Duration(seconds: 5), () {
+      for (var i = 0; i < xmax - 1; i++) {
+        // int randoma = -80 + Random().nextInt(160 - -80);
+        // int randomb = 0 + Random().nextInt(100 - 0);
+        // String a = "0.0";
 
-        // print(i.toString() + ";" + xmax.toString());
-
-        // print(logarrray.length);
-
-        // if () {
-        // logarrray[9];
-        // }
-
-        // print(i);
-        // chartData.add(SalesData(logarrray[0]['time'],double.parse(logarrray[0]['temp']),double.parse(logarrray[0]['humid'])));
-        // if (i >= xmax - logsize) {
-        if (i >= xmax - logsize) {
-          chartData.add(SalesData(logarrray[(logsize - (xmax  - i)).toInt()]['time'],double.parse(logarrray[(logsize - (xmax  - i)).toInt()]['temp']),double.parse(logarrray[(logsize - (xmax  - i)).toInt()]['humid'])));
+        if (i >= xmax - logsize + 1) {
+          chartData.add(SalesData(
+              logarrray[(((logsize - 1) - (logsize - (xmax - i))) + 1).toInt()]
+                  ['time'],
+              double.parse(logarrray[
+                      (((logsize - 1) - (logsize - (xmax - i))) + 1).toInt()]
+                  ['temp']),
+              double.parse(logarrray[
+                      (((logsize - 1) - (logsize - (xmax - i))) + 1).toInt()]
+                  ['humid'])));
         } else {
-          chartData.add(SalesData('00:00:00', double.parse('0'), double.parse('0')));
+          // chartData.add(SalesData(
+          //     logarrray[logsize - 1]['time'],
+          //     double.parse(logarrray[logsize - 1]['temp']),
+          //     double.parse(
+          //         logarrray[logsize - 1]['humid'])));
+          chartData.add(SalesData('START', double.parse('0'), double.parse('0')));
         }
-        // chartData.add(SalesData(logarrray[i]['time'],double.parse(logarrray[i]['temp']),double.parse(logarrray[i]['humid'])));
       }
       chart_start = true;
     });
-    // chartData.add(SalesData('', double.parse('0'), double.parse('0')));
     return chartData;
   }
 
@@ -220,10 +221,18 @@ class _CHARTState extends State<CHART> {
     xmax += 1;
     // int randoma = -80 + Random().nextInt(160 - -80);
     // int randomb = 0 + Random().nextInt(100 - 0);
-    _data.add(SalesData(
-        datain['time'] ?? "",
-        double.parse(datain['temp'] ?? "0"),
-        double.parse(datain['humid'] ?? "0")));
+    if (first_time == true) {
+      _data.add(SalesData(
+          logarrray[0]['time'],
+          double.parse(logarrray[0]['temp']),
+          double.parse(logarrray[0]['humid'])));
+      first_time = false;
+    } else {
+      _data.add(SalesData(
+          datain['time'] ?? "",
+          double.parse(datain['temp'] ?? "0"),
+          double.parse(datain['humid'] ?? "0")));
+    }
     _data.removeAt(0);
 
     _chartSeriesController.updateDataSource(
