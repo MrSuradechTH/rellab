@@ -10,50 +10,60 @@
 				$temp = $_POST['temp'];
 				$humid = $_POST['humid'];
 				
-				$query = mysqli_query($con, "SELECT log_600 FROM machine_data WHERE name = '$name'");
-				// $log_600_array_befor_json = array("Peter"=>35, "Ben"=>37, "Joe"=>43);
+				$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
 				$result = mysqli_fetch_array($query);
 				
-				$old_array = explode(" /,".PHP_EOL,$result[0]);
-				echo $old_array[0];
-				// echo sizeof($result) - 1;
-				$array = array("temp" => $temp, "humid" => $humid, "time" => $time);
-				// $array = array_push($result, json_encode($array, JSON_PRETTY_PRINT));
-				// $array = array("name" => "tEST", "temp" => "tEST", "humid" => "tEST", "time" => "tEST");
-				$json = json_encode($array, JSON_PRETTY_PRINT);
-				$result[sizeof($result) - 1] = strval($json);
-				// echo $array[sizeof($result) + 1];
-				// echo $result[1];
-				
-				$str = "";
-				for ($x = 0;$x < sizeof($result) - 1;$x++) {
-					$str = $str.strval($result[$x]);
-				}
-				// echo $str;
-				
-				// echo $result[0];
-				// ,log_600 = '$array'
-				
-				$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',timestamp = '$time' WHERE name = '$name'");
-				$result = mysqli_affected_rows($con);
-				if ($result) {
-					// echo $time;
-					echo '<span class = "text_rainbow">Update Success!!!</span>';
+				$old_array = explode("}",$result[0]);
+				echo count($old_array);
+				$size_max = 10;
+				if (count($old_array) > $size_max) {
+					// unset($old_array[count($old_array) - 1]);
+					// unset($old_array[count($old_array) - 2]);
+					array_splice($old_array, $size_max - 1);
 				}else {
-					echo '<span class = "text_rainbow">Update Fail!!!</span>';
+					unset($old_array[count($old_array) - 1]);
 				}
-				exit();
+				echo count($old_array);
+				$timearray = $old_array[0]."}";
+				$timearray = json_decode($timearray);
+				
+				if ($timearray->{"time"} == $time) {
+					// echo $old_array[2];
+					echo '<span class = "text_rainbow">Update Fail!!!</span>';
+				}else {
+					$array = array("temp" => $temp, "humid" => $humid, "time" => $time);
+					$json = json_encode($array, JSON_PRETTY_PRINT);
+					$str = $json.",";
+					echo count($old_array);
+					for ($x = 0;$x < count($old_array);$x++) {
+						$str = $str.$old_array[$x]."}";
+					}
+					// echo count($old_array)+1;
+					echo "[\n".$str."\n]";
+					$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',timestamp = '$time',LOG_600 = '$str' WHERE name = '$name'");
+					$result = mysqli_affected_rows($con);
+					if ($result) {
+						echo '<span class = "text_rainbow">Update Success!!!</span>';
+					}else {
+						echo '<span class = "text_rainbow">Update Fail!!!</span>';
+					}
+				}
 			}
 		}else if ($mode == "monitor") {
 			if (isset($_POST['name'])) {
 				$name = $_POST['name'];
-				$query = mysqli_query($con, "SELECT name,temp,humid FROM machine_data WHERE name = '$name'");
+				$query = mysqli_query($con, "SELECT name,temp,humid,timestamp FROM machine_data WHERE name = '$name'");
 				$result = mysqli_fetch_array($query);
-				// $time = date("d/m/Y H:i:s",strtotime('+7 hours, +543 year, -1 second'));
-				$time = date("H:i:s",strtotime('+7 hours, +543 year, -1 second'));
-				// $as = array("time" => $result[0], "value" => $time);
-				$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $time);
+				$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $result[3]);
 				echo json_encode($array, JSON_PRETTY_PRINT);
+			}
+		}else if ($mode == "log") {
+			if (isset($_POST['name'])) {
+				$name = $_POST['name'];
+				$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
+				$result = mysqli_fetch_array($query);
+				// echo json_encode($array, JSON_PRETTY_PRINT);
+				echo "[\n".$result[0]."\n]";
 				// echo json_encode($array);
 				// echo '{"name" : "'.$result[0].'","temp" : '.$result[1].',"humid" : '.$result[2].'}';
 					
@@ -63,18 +73,17 @@
 				echo $decode["name"];
 				echo $decode["temp"];
 				echo $decode["humid"];*/
-				exit();
+				
 			}
 		}
 	}else {
-		$query = mysqli_query($con, "SELECT name,temp,humid FROM machine_data WHERE name = 'TEMPCYCLE#01'");
+		$query = mysqli_query($con, "SELECT name,temp,humid,timestamp FROM machine_data WHERE name = 'BURNIN#01'");
 		$result = mysqli_fetch_array($query);
-		$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $time);
+		$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $result[3]);
 		echo json_encode($array, JSON_PRETTY_PRINT);
-		// echo json_encode($array, JSON_PRETTY_PRINT);
-		// echo json_encode($array, JSON_PRETTY_PRINT);
-		exit();
+		
 	}
+	exit();
 ?>
 <html>
 	<form method = "post">
