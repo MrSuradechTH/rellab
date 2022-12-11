@@ -15,7 +15,7 @@
 				
 				$old_array = explode("}",$result[0]);
 				echo count($old_array);
-				$size_max = 10;
+				$size_max = 10 + 1;
 				if (count($old_array) > $size_max) {
 					// unset($old_array[count($old_array) - 1]);
 					// unset($old_array[count($old_array) - 2]);
