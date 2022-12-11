@@ -16,21 +16,20 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
       padding: const EdgeInsets.all(10),
       child: ElevatedButton(
           child: Container(
-            padding: const EdgeInsets.only(bottom: 120.0),
-            child: Row(
-              children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: Text(
+            padding: const EdgeInsets.only(top: 25.0),
+            child: Center(
+              child: Column(
+                children: [
+                  const Align(
+                    alignment: Alignment.center,
+                  ),
+                  Text(
                     machinestatusname[int.parse(sharedata[0])][i],
                     style: const TextStyle(fontSize: menufontsize),
                     textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           onPressed: () {
@@ -54,10 +53,7 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
       body: GridView.count(
         crossAxisCount: menux,
         children: [
-          for (int i = 0;
-              i < machinestatusname[int.parse(sharedata[0])].length;
-              i++)
-            name(i),
+          for (int i = 0;i < machinestatusname[int.parse(sharedata[0])].length;i++)name(i),
         ],
       ),
     );

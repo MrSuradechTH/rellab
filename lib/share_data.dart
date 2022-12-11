@@ -1,6 +1,5 @@
 //jsonget
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,23 +10,23 @@ const double menufontsize = 20;
 
 //machine menu
 final List<String> machinestatustype = [
-  "TEMPCYCLE",
+  // "TEMPCYCLE",
   "TEMPHUMID",
-  "ENDURANCE",
+  // "ENDURANCE",
   "BURNIN",
-  "BAKE",
-  "HAST"
+  // "BAKE",
+  // "HAST"
 ];
 final List<List<String>> machinestatusname = [
-  [
-    "TEMPCYCLE#01",
-    "TEMPCYCLE#02",
-    "TEMPCYCLE#03",
-    "TEMPCYCLE#04",
-    "TEMPCYCLE#05",
-    "TEMPCYCLE#06",
-    "TEMPCYCLE#07"
-  ],
+  // [
+  //   "TEMPCYCLE#01",
+  //   "TEMPCYCLE#02",
+  //   "TEMPCYCLE#03",
+  //   "TEMPCYCLE#04",
+  //   "TEMPCYCLE#05",
+  //   "TEMPCYCLE#06",
+  //   "TEMPCYCLE#07"
+  // ],
   [
     "TEMPHUMID#01",
     "TEMPHUMID#02",
@@ -35,7 +34,7 @@ final List<List<String>> machinestatusname = [
     "TEMPHUMID#04",
     "TEMPHUMID#05"
   ],
-  ["ENDURANCE#01", "ENDURANCE#02", "ENDURANCE#03", "ENDURANCE#04"],
+  // ["ENDURANCE#01", "ENDURANCE#02", "ENDURANCE#03", "ENDURANCE#04"],
   [
     "BURNIN#01",
     "BURNIN#02",
@@ -57,8 +56,8 @@ final List<List<String>> machinestatusname = [
     "BURNIN#18",
     "BURNIN#19"
   ],
-  ["BAKE#01", "BAKE#02", "BAKE#03"],
-  ["HAST#01", "HAST#02", "HAST#03", "HAST#04", "HAST#05", "HAST#06", "HAST#07"],
+  // ["BAKE#01", "BAKE#02", "BAKE#03"],
+  // ["HAST#01", "HAST#02", "HAST#03", "HAST#04", "HAST#05", "HAST#06", "HAST#07"],
 ];
 final List<String> sharedata = [
   "",
@@ -67,10 +66,13 @@ final List<String> sharedata = [
 
 //jsonget
 String server = 'http://127.0.0.1/json.php';
-List<dynamic> mode = ["monitor"];
+List<dynamic> mode = ["monitor", "log"];
 Map<dynamic, dynamic> datain = {};
 String timenow = "", lasttime = "";
 const int updatedelay = 990;
+List<dynamic> logarrray = [];
+int logsize = 0;
+bool chart_start = false;
 
 // List<List<dynamic>> dataneed = [[],[],[]]; //array
 Future getdata(String m) async {
@@ -107,20 +109,63 @@ Future getdata(String m) async {
       lasttime = timenow;
       datain = jsonDecode(txt.body);
       timenow = datain['time'];
+      // sprintf("%s : %s", [lasttime,timenow]);
       if (lasttime == timenow) {
         getdata(m);
       } else {
-        if (kDebugMode) {
-          // print('${datain['name']} : ${datain['temp']}  : ${datain['humid']}  : ${datain['time']}\n');
-        }
+        // if (kDebugMode) {
+        // print('${datain['name']} : ${datain['temp']}  : ${datain['humid']}  : ${datain['time']}\n');
+        // }
       }
     } else {
       print(txt.statusCode);
     }
     // http.Client().close();
+  } else if (m == mode[1]) {
+    // final txt = await http.Client().get(Uri.parse(server));
+    Map<String, String> body = {
+      'mode': mode[1],
+      'name': sharedata[1],
+    };
+
+    // int timeout = 5;
+    // try {
+    //   http.Response response = await http.get('someUrl').
+    //       timeout(Duration(seconds: timeout));
+    //   if (response.statusCode == 200) {
+    //     // do something
+    //   } else {
+    //     // handle it
+    //   }
+    // }  on Error catch (e) {
+    //   print('General Error: $e');
+    // }
+
+    // http.Client().close();
+    final txt = await http
+        .post(
+          Uri.parse(server),
+          body: body,
+        )
+        .timeout(const Duration(seconds: updatedelay));
+
+    if (txt.statusCode == 200) {
+      // datain = jsonDecode(txt.body);
+      logarrray = jsonDecode(txt.body);
+      // print("'" + txt.body + "'");
+      // print(logarrray[9]);
+      // print(logarrray.length);
+      // print("yes");
+      // return logarrray;
+      logsize = logarrray.length;
+      print(logsize);
+    } else {
+      print(txt.statusCode);
+    }
   }
+  // print(logarrray.length);
 }
 
 //chart
 const double chartw = 1000, charth = 500;
-double xmax = 600;
+double xmax = 600;  //xmax must be more than logsize

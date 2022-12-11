@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:rellab/share_data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,6 +25,7 @@ class _CHARTState extends State<CHART> {
 
   @override
   void initState() {
+    chart_start = false;
     _data = getChartData();
     _trackballBehavior = TrackballBehavior(
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -43,8 +46,11 @@ class _CHARTState extends State<CHART> {
       ),
     );
     Timer.periodic(const Duration(milliseconds: updatedelay), (timer) async {
-      getdata(mode[0]);
-      updateData();
+      print("loogsize = " + logsize.toString() + ":xmax = " + xmax.toString());
+      if (chart_start == true) {
+        getdata(mode[0]);
+        updateData();
+      }
     });
     super.initState();
   }
@@ -173,14 +179,40 @@ class _CHARTState extends State<CHART> {
   }
 
   List<SalesData> getChartData() {
+    getdata(mode[1]);
     final List<SalesData> chartData = [];
-    for (var i = 0; i < xmax; i++) {
-      // int randoma = -80 + Random().nextInt(160 - -80);
-      // int randomb = 0 + Random().nextInt(100 - 0);
-      // int a = datain['temp'];
-      chartData.add(SalesData(
-          datain['time'] ?? "", double.parse('0'), double.parse('0')));
-    }
+    // chartData.length = 0;
+    chartData.add(SalesData('', double.parse('0'), double.parse('0')));
+    Timer(Duration(seconds: 5), () {
+      // print(logsize);
+      // print(logarrray[9]);
+      chartData.length - 1;
+      for (var i = 0; i < xmax; i++) {
+        int randoma = -80 + Random().nextInt(160 - -80);
+        int randomb = 0 + Random().nextInt(100 - 0);
+        String a = "0.0";
+
+        // print(i.toString() + ";" + xmax.toString());
+
+        // print(logarrray.length);
+
+        // if () {
+        // logarrray[9];
+        // }
+
+        // print(i);
+        // chartData.add(SalesData(logarrray[0]['time'],double.parse(logarrray[0]['temp']),double.parse(logarrray[0]['humid'])));
+        // if (i >= xmax - logsize) {
+        if (i >= xmax - logsize) {
+          chartData.add(SalesData(logarrray[(logsize - (xmax  - i)).toInt()]['time'],double.parse(logarrray[(logsize - (xmax  - i)).toInt()]['temp']),double.parse(logarrray[(logsize - (xmax  - i)).toInt()]['humid'])));
+        } else {
+          chartData.add(SalesData('00:00:00', double.parse('0'), double.parse('0')));
+        }
+        // chartData.add(SalesData(logarrray[i]['time'],double.parse(logarrray[i]['temp']),double.parse(logarrray[i]['humid'])));
+      }
+      chart_start = true;
+    });
+    // chartData.add(SalesData('', double.parse('0'), double.parse('0')));
     return chartData;
   }
 
