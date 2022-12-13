@@ -1,7 +1,7 @@
 <?php
 	require_once 'connect_mysqli.php';
 	header('Content-Type: application/json');
-	$time = date("H:i:s",strtotime('+7 hours, +543 year, -1 second'));
+	$time = date("H:i:s",strtotime('+6 hours, +543 year, -1 second'));
 	if(isset($_POST['mode'])) {
 		$mode = $_POST['mode'];
 		if ($mode == "update") {
@@ -15,7 +15,7 @@
 				
 				$old_array = explode("}",$result[0]);
 				echo count($old_array);
-				$size_max = 10 + 1;
+				$size_max = 600 + 1;
 				if (count($old_array) > $size_max) {
 					// unset($old_array[count($old_array) - 1]);
 					// unset($old_array[count($old_array) - 2]);
