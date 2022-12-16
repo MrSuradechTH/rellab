@@ -76,13 +76,59 @@
 				
 			}
 		}
-	}else {
-		$query = mysqli_query($con, "SELECT name,temp,humid,timestamp FROM machine_data WHERE name = 'BURNIN#01'");
-		$result = mysqli_fetch_array($query);
-		$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $result[3]);
-		echo json_encode($array, JSON_PRETTY_PRINT);
-		
+	}else if(isset($_GET['name'])) {{
+			$name = $_GET['name'];
+			$temp = strval(rand(25,180));
+			$humid = strval(rand(0,90));
+			
+			$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
+			$result = mysqli_fetch_array($query);
+			
+			$old_array = explode("}",$result[0]);
+			echo count($old_array);
+			$size_max = 600 + 1;
+			if (count($old_array) > $size_max) {
+				// unset($old_array[count($old_array) - 1]);
+				// unset($old_array[count($old_array) - 2]);
+				array_splice($old_array, $size_max - 1);
+			}else {
+				unset($old_array[count($old_array) - 1]);
+			}
+			echo count($old_array);
+			$timearray = $old_array[0]."}";
+			$timearray = json_decode($timearray);
+			
+			if ($timearray->{"time"} == $time) {
+				// echo $old_array[2];
+				echo '<span class = "text_rainbow">Update Fail!!!</span>';
+			}else {
+				$array = array("temp" => $temp, "humid" => $humid, "time" => $time);
+				$json = json_encode($array, JSON_PRETTY_PRINT);
+				$str = $json.",";
+				echo count($old_array);
+				for ($x = 0;$x < count($old_array);$x++) {
+					$str = $str.$old_array[$x]."}";
+				}
+				// echo count($old_array)+1;
+				// echo "[\n".$str."\n]";
+				$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',timestamp = '$time',LOG_600 = '$str' WHERE name = '$name'");
+				$result = mysqli_affected_rows($con);
+				if ($result) {
+					echo '<span class = "text_rainbow">Update Success!!!</span>';
+				}else {
+					echo '<span class = "text_rainbow">Update Fail!!!</span>';
+				}
+			}
+		}
 	}
+	
+	// else {
+		// $query = mysqli_query($con, "SELECT name,temp,humid,timestamp FROM machine_data WHERE name = 'BURNIN#01'");
+		// $result = mysqli_fetch_array($query);
+		// $array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $result[3]);
+		// echo json_encode($array, JSON_PRETTY_PRINT);
+		
+	// }
 	exit();
 ?>
 <html>
