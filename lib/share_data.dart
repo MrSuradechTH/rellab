@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 //them
 dynamic background = Colors.grey;
-dynamic menux = 5;
 const double menufontsize = 20;
+List<String> fontstring = ["Righteous-Regular"];
+List<TextStyle> font = [const TextStyle(fontFamily: "Righteous-Regular",fontSize: 30),const TextStyle(fontFamily: "Righteous-Regular",fontSize: 20)];
 
 //machine menu
+dynamic menux = 5;
 final List<String> machinestatustype = [
   // "TEMPCYCLE",
   "TEMPHUMID",

@@ -38,6 +38,7 @@ dependencies:
   sprintf: ^7.0.0
   http: ^0.13.5
   syncfusion_flutter_charts: ^20.2.49
+  animate_gradient: ^0.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -97,10 +98,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Righteous-Regular
+      fonts:
+        - asset: fonts/Righteous-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

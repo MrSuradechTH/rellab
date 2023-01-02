@@ -18,7 +18,7 @@ List<dynamic> mode = ["monitor"];
 Map<dynamic, dynamic> datain = {};
 List<List<List<dynamic>>> logarray = List.generate(machinestatustype.length, (i) => List.generate(machinemax(), (i) => [null,null,null,null,null,null]), growable: false);
 const int updatedelay = 990,timetooffline = 60;
-List<String> stringtime = ["Sec Ago","Min Ago🚨⚠️","Hour Ago🚨⚠️","Day Ago🚨⚠️","Week Ago🚨⚠️","Mounth Ago🚨⚠️","Year Ago🚨⚠️"];
+List<String> stringtime = ["Sec Ago","Min Ago\n🚨⚠️🚨","Hour Ago\n🚨⚠️🚨","Day Ago\n🚨⚠️🚨","Week Ago\n🚨⚠️🚨","Mounth Ago\n🚨⚠️🚨","Year Ago\n🚨⚠️🚨"];
 List<Color> statuscolor = [const Color.fromARGB(255, 255, 17, 0),const Color.fromARGB(255, 0, 255, 8)];
 
 class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
@@ -31,7 +31,10 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
       // logarray[1][0][1] = 2;
       // print(machinestatustype.length);
       
-      if (!mounted) return;
+      if (!mounted) {
+        http.Client().close();
+        return;
+      }
       setState(() {
         // print(humidmachine.toString() + ":" + machinestatustype[int.parse(sharedata[0])]);
         // print(humidmachine);
@@ -61,11 +64,11 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
                 ),
                 if (humidmachine == false) Text(
                   "${machinestatusname[int.parse(sharedata[0])][i]}\n\n🌡️ ${logarray[int.parse(sharedata[0])][i][1]} °C\n⏱ ${logarray[int.parse(sharedata[0])][i][3]}  ${stringtime[logarray[int.parse(sharedata[0])][i][5] ?? 0]}",
-                  style: const TextStyle(fontSize: menufontsize),
+                  style: font[1],
                   textAlign: TextAlign.center,
                 )else if (humidmachine == true) Text(
                   "${machinestatusname[int.parse(sharedata[0])][i]}\n\n🌡️ ${logarray[int.parse(sharedata[0])][i][1]} °C\n💧 ${logarray[int.parse(sharedata[0])][i][2]} %RH\n⏱ ${logarray[int.parse(sharedata[0])][i][3]} ${stringtime[logarray[int.parse(sharedata[0])][i][5] ?? 0]}",
-                  style: const TextStyle(fontSize: menufontsize),
+                  style: font[1],
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -84,7 +87,10 @@ class MACHINESTATUSNAMEState extends State<MACHINESTATUSNAME> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MACHINE STATUS"),
+        title: Text(
+          "MACHINE STATUS",
+          style: font[0],
+        ),
         automaticallyImplyLeading: true,
         leading: const BackButton(
           color: Colors.white,
@@ -152,7 +158,8 @@ Future getdata(String m) async {
         // print(logarray[int.parse(sharedata[0])][i][4].toString());
         // print(datain['temp']);
         // print(logarray[int.parse(sharedata[0])][j]);
-        // print(logarray);
+
+        // print(logarray); //********
         
         // logarray[0] = "datain['temp'].toString()";
         // logarray[i][1] = datain['humid'].toString();
@@ -160,11 +167,11 @@ Future getdata(String m) async {
         
         
       } else {
-        print(txt.statusCode);
+        // print(txt.statusCode);
       }
     }
-    http.Client().close();
   }
+  http.Client().close();
 }
 
 machinemax() {

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rellab/share_data.dart';
@@ -50,6 +49,10 @@ class _CHARTState extends State<CHART> {
       activationMode: ActivationMode.singleTap,
       tooltipSettings: const InteractiveTooltip(
         enable: true,
+        textStyle: TextStyle(
+          fontFamily: "Righteous-Regular",
+          fontSize: 15
+        ),
         format: "point.y °C",
       ),
     );
@@ -59,6 +62,10 @@ class _CHARTState extends State<CHART> {
       activationMode: ActivationMode.singleTap,
       tooltipSettings: const InteractiveTooltip(
         enable: true,
+        textStyle: TextStyle(
+          fontFamily: "Righteous-Regular",
+          fontSize: 15
+        ),
         format: "point.y %RH",
       ),
     );
@@ -67,9 +74,9 @@ class _CHARTState extends State<CHART> {
       enableMouseWheelZooming: true,
     );
     Timer.periodic(const Duration(milliseconds: updatedelay), (timer) async {
-      if (kDebugMode) {
-        print("loogsize = $logsize :xmax = $xmax");
-      }
+      // if (kDebugMode) {
+      //   print("loogsize = $logsize :xmax = $xmax");
+      // }
       if (chartstart == true) {
         // print(_data.length);
         getdata(mode[0]);
@@ -78,13 +85,13 @@ class _CHARTState extends State<CHART> {
           lasttime = timenow;
           updateData();
         }
-        if (kDebugMode) {
-          print("loop");
-        }
+        // if (kDebugMode) {
+        //   print("loop");
+        // }
       }
-      if (kDebugMode) {
-        print("endloop");
-      }
+      // if (kDebugMode) {
+      //   print("endloop");
+      // }
     });
     super.initState();
   }
@@ -98,13 +105,17 @@ class _CHARTState extends State<CHART> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("MACHINE STATUS"),
+          title: Text(
+            "MACHINE STATUS",
+            style: font[0],
+          ),
           automaticallyImplyLeading: true,
           leading: const BackButton(
             color: Colors.white,
           ),
         ),
         body: Container(
+          height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
           child: SingleChildScrollView(
             physics: RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.controlLeft) ? const NeverScrollableScrollPhysics() : null,
@@ -120,7 +131,11 @@ class _CHARTState extends State<CHART> {
                     zoomPanBehavior: RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.controlLeft) ? _zoomPanBehavior : null,
                     title: ChartTitle(
                         text: sprintf("Temp %5.2f °C", [temp]),
-                        textStyle: const TextStyle(fontSize: 20)),
+                        textStyle: const TextStyle(
+                          fontFamily: "Righteous-Regular",
+                          fontSize: 25
+                        ),
+                    ),
                     legend: Legend(
                       isVisible: false,
                       position: LegendPosition.bottom,
@@ -144,7 +159,18 @@ class _CHARTState extends State<CHART> {
                       labelRotation: 90,
                       // isVisible: false, //hide
                       tickPosition: TickPosition.inside,
-                      title: AxisTitle(text: "Time(S)", alignment: ChartAlignment.center),
+                      title: AxisTitle(
+                        text: "Time(S)",
+                        textStyle:const TextStyle(
+                          fontFamily: "Righteous-Regular",
+                          fontSize: 20
+                        ),
+                        alignment: ChartAlignment.center
+                      ),
+                      labelStyle: const TextStyle(
+                        fontFamily: "Righteous-Regular",
+                        fontSize: 10
+                      ),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
                     primaryYAxis: NumericAxis(
@@ -153,7 +179,17 @@ class _CHARTState extends State<CHART> {
                       maximum: 180,
                       interval: 10,
                       tickPosition: TickPosition.inside,
-                      title: AxisTitle(text: "Temperature(°C)"),
+                      title: AxisTitle(
+                        text: "Temperature(°C)",
+                        textStyle: const TextStyle(
+                          fontFamily: "Righteous-Regular",
+                          fontSize: 20
+                        ),
+                      ),
+                      labelStyle: const TextStyle(
+                        fontFamily: "Righteous-Regular",
+                        fontSize: 10
+                      ),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
                   ),
@@ -165,8 +201,12 @@ class _CHARTState extends State<CHART> {
                   child: SfCartesianChart(
                     zoomPanBehavior: RawKeyboard.instance.keysPressed.contains(LogicalKeyboardKey.controlLeft) ? _zoomPanBehavior : null,
                     title: ChartTitle(
-                        text: sprintf("Hum   %5.2f %%RH", [humid]),
-                        textStyle: const TextStyle(fontSize: 20)),
+                      text: sprintf("Hum   %5.2f %%RH", [humid]),
+                      textStyle: const TextStyle(
+                        fontFamily: "Righteous-Regular",
+                        fontSize: 25
+                      ),
+                    ),
                     legend: Legend(
                       isVisible: false,
                       position: LegendPosition.bottom,
@@ -190,7 +230,18 @@ class _CHARTState extends State<CHART> {
                       labelRotation: 90,
                       // isVisible: false, //hide time
                       tickPosition: TickPosition.inside,
-                      title: AxisTitle(text: "Time(S)"),
+                      title: AxisTitle(
+                        text: "Time(S)",
+                        textStyle:const TextStyle(
+                          fontFamily: "Righteous-Regular",
+                          fontSize: 20
+                        ),
+                        alignment: ChartAlignment.center
+                      ),
+                      labelStyle: const TextStyle(
+                        fontFamily: "Righteous-Regular",
+                        fontSize: 10
+                      ),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
                     primaryYAxis: NumericAxis(
@@ -199,7 +250,17 @@ class _CHARTState extends State<CHART> {
                       maximum: 100,
                       interval: 5,
                       tickPosition: TickPosition.inside,
-                      title: AxisTitle(text: "Humidity(%)"),
+                      title: AxisTitle(
+                        text: "Humidity(%)",
+                        textStyle: const TextStyle(
+                          fontFamily: "Righteous-Regular",
+                          fontSize: 20
+                        ),
+                      ),
+                      labelStyle: const TextStyle(
+                        fontFamily: "Righteous-Regular",
+                        fontSize: 10
+                      ),
                       majorGridLines: const MajorGridLines(width: 0),
                     ),
                   ),
@@ -275,7 +336,10 @@ class _CHARTState extends State<CHART> {
       );
     }
 
-    if (!mounted) return;
+    if (!mounted) {
+      http.Client().close();
+      return;
+    }
     setState(() {
       // temp = randoma.toDouble();
       // humid = randomb.toDouble();
@@ -322,7 +386,7 @@ Future getdata(String m) async {
       // print(jsonDecode(txt.body));
       datain = jsonDecode(txt.body);
     } else {
-      print(txt.statusCode);
+      // print(txt.statusCode);
     }
     // http.Client().close();
   } else if (m == mode[1]) {
@@ -358,12 +422,13 @@ Future getdata(String m) async {
       // return logarrray;
       // print(logarrray);
       logsize = logarrray.length;
-      print(logsize);
+      // print(logsize);
     } else {
-      print(txt.statusCode);
+      // print(txt.statusCode);
     }
   }
   // print(logarrray.length);
+  http.Client().close();
 }
 
 //chart
