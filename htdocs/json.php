@@ -16,6 +16,7 @@
 	// echo date_timestamp_get($time);
 	
 	// $time1 = strtotime(date_format(date_create(),"m/d/Y H:i:s"));
+	// echo $time1;
 	// $time2 = strtotime("01/15/2023 17:44:00");
 	// $x = $time1 - $time2;
 	// echo $x;
@@ -117,13 +118,23 @@
 		$mode = $_GET['mode'];
 		$name = $_GET['name'];
 		if ($mode == "getlog") {
-			header('Content-Type:application/xls');  
-			header('Content-Disposition: attachment; filename=test.xls');
+			
 			$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
 			$result = mysqli_affected_rows($con);
 			$result = mysqli_fetch_array($query);
 			$old_array = explode("},",$result[0]);
 			// echo $old_array[1]."}";
+			
+			$jsonarray = $old_array[count($old_array) - 1];
+			$jsondecode = json_decode($jsonarray);
+			$filename = date_format(date_create($jsondecode->time),"[m-d-Y_H-i-s]");
+			$jsonarray = $old_array[0]."}";
+			$jsondecode = json_decode($jsonarray);
+			// echo $jsondecode->time;
+			$filename = $filename."to".date_format(date_create($jsondecode->time),"[m-d-Y_H-i-s]");
+			// echo $filename;
+			header('Content-Type:application/xls');
+			header('Content-Disposition: attachment; filename='.$filename.'.xls');
 			
 			echo "<table><thead><tr><th>time</th><th>temp</th><th>humid</th></tr></thead><tbody>";
 			for ($x = 0;$x < count($old_array);$x++) {
