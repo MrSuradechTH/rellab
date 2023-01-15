@@ -1,12 +1,39 @@
 <?php
 	require_once 'connect_mysqli.php';
+	date_default_timezone_set("Asia/Bangkok");
 	// $date_dafault 
 	// $date = date("d-m-Y",strtotime('+6 hours, +543 year, -1 second'));
 	// echo $date;
-	$time = date("H:i:s",strtotime('+6 hours, +543 year, -1 second'));
+	
+	// date eng
+	// $time = date("m-d-Y H:i:s");
+	$time = date_create();
+	$time = date_format($time,"m/d/Y H:i:s");
+	// echo $time.PHP_EOL;
+	
+	// echo $time;
+	// $time = date_create($time);
+	// echo date_timestamp_get($time);
+	
+	// $time1 = strtotime(date_format(date_create(),"m/d/Y H:i:s"));
+	// $time2 = strtotime("01/15/2023 17:44:00");
+	// $x = $time1 - $time2;
+	// echo $x;
+	// exit();
+	
+	// $time = date("H:i:s");
+	// echo $time;
+	// exit();
+	
+	
+	
+	
+	// // date thai
+	// $time = date("H:i:s",strtotime('+6 hours, +543 year, -1 second'));
 	// $query = mysqli_query($con, "SELECT ADDTIME(NOW(), '198327 0:0:0'),NOW()");
 	// $result = mysqli_fetch_array($query);
 	// echo($result[0].PHP_EOL.$result[1].PHP_EOL);
+	// exit();
 	
 	if(isset($_POST['mode'])) {
 		header('Content-Type: application/json');
@@ -17,12 +44,11 @@
 				$temp = $_POST['temp'];
 				$humid = $_POST['humid'];
 				
-				$query = mysqli_query($con, "SELECT ADDTIME(NOW(), '198327 0:0:0'),LOG_600 FROM machine_data WHERE name = '$name'");
+				$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
 				$result = mysqli_fetch_array($query);
 				
-				$time_stamp = $result[0];
-				$old_array = explode("}",$result[1]);
-				// echo count($old_array);
+				$old_array = explode("}",$result[0]);
+				echo count($old_array);
 				$size_max = 600 + 1;
 				if (count($old_array) > $size_max) {
 					// unset($old_array[count($old_array) - 1]);
@@ -49,7 +75,7 @@
 					// echo count($old_array)+1;
 					echo "[\n".$str."\n]";
 					
-					$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',time = '$time',time_stamp = '$time_stamp',LOG_600 = '$str' WHERE name = '$name'");
+					$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',time = '$time',LOG_600 = '$str' WHERE name = '$name'");
 					$result = mysqli_affected_rows($con);
 					if ($result) {
 						echo '<span class = "text_rainbow">Update Success!!!</span>';
@@ -61,11 +87,10 @@
 		}else if ($mode == "monitor") {
 			if (isset($_POST['name'])) {
 				$name = $_POST['name'];
-				$query = mysqli_query($con, "SELECT name,temp,humid,time,TO_SECONDS(ADDTIME(NOW(), '198327 0:0:0')),TO_SECONDS(time_stamp) FROM machine_data WHERE name = '$name'");
+				$query = mysqli_query($con, "SELECT name,temp,humid,time FROM machine_data WHERE name = '$name'");
 				$result = mysqli_fetch_array($query);
-				$time_stamp_seconds_now = $result[4];
-				$time_stamp_seconds_old = $result[5];
-				$time_stamp_seconds = $time_stamp_seconds_now - $time_stamp_seconds_old;
+				$time_stamp_seconds = strtotime($time) - strtotime($result[3]);
+				// echo $time_stamp_seconds;
 				$array = array("name" => $result[0], "temp" => number_format($result[1], 2), "humid" => number_format($result[2], 2), "time" => $result[3], "time_stamp_seconds" => $time_stamp_seconds);
 				echo json_encode($array, JSON_PRETTY_PRINT);
 			}
@@ -91,7 +116,7 @@
 	}else if(isset($_GET['mode']) && isset($_GET['name'])) {
 		$mode = $_GET['mode'];
 		$name = $_GET['name'];
-		if ($mode == "getdatas") {
+		if ($mode == "getlog") {
 			header('Content-Type:application/xls');  
 			header('Content-Disposition: attachment; filename=test.xls');
 			$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
@@ -123,12 +148,11 @@
 			$temp = strval(rand(25,180));
 			$humid = strval(rand(0,90));
 			
-			$query = mysqli_query($con, "SELECT ADDTIME(NOW(), '198327 0:0:0'),LOG_600 FROM machine_data WHERE name = '$name'");
+			$query = mysqli_query($con, "SELECT LOG_600 FROM machine_data WHERE name = '$name'");
 			$result = mysqli_fetch_array($query);
 			
-			$time_stamp = $result[0];
-			$old_array = explode("}",$result[1]);
-			// echo count($old_array);
+			$old_array = explode("}",$result[0]);
+			echo count($old_array);
 			$size_max = 600 + 1;
 			if (count($old_array) > $size_max) {
 				// unset($old_array[count($old_array) - 1]);
@@ -148,13 +172,14 @@
 				$array = array("temp" => $temp, "humid" => $humid, "time" => $time);
 				$json = json_encode($array, JSON_PRETTY_PRINT);
 				$str = $json.",";
-				echo count($old_array);
+				// echo count($old_array);
 				for ($x = 0;$x < count($old_array);$x++) {
 					$str = $str.$old_array[$x]."}";
 				}
 				// echo count($old_array)+1;
-				// echo "[\n".$str."\n]";
-				$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',time = '$time',time_stamp = '$time_stamp',LOG_600 = '$str' WHERE name = '$name'");
+				echo "[\n".$str."\n]";
+				
+				$query = mysqli_query($con, "UPDATE machine_data SET temp = '$temp',humid = '$humid',time = '$time',LOG_600 = '$str' WHERE name = '$name'");
 				$result = mysqli_affected_rows($con);
 				if ($result) {
 					echo '<span class = "text_rainbow">Update Success!!!</span>';
